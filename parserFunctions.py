@@ -9,7 +9,7 @@ import json
 
 
 class Parser:
-    def __init__(self,file):
+    def __init__(self, file):
         self.originalDataFrame = self.createDataframe(file)
         self.german_months_dict = {
             'Jan': '01',
@@ -30,7 +30,7 @@ class Parser:
         tableDataframe = pd.read_html(file)[0]
         return tableDataframe
 
-    def cleanDataFrame(self,dataFrame = 'getOrignialDataFrame') -> pandas.DataFrame:
+    def cleanDataFrame(self, dataFrame='getOrignialDataFrame') -> pandas.DataFrame:
         """
               This functions creates a Cleans the Pandas Dataframe via removing unnecessary
 
@@ -81,7 +81,7 @@ class Parser:
         if mask.any():  # checks if mask has at least one True value
             index = int(dataFrame[mask].index[0])
             indexToCheck = dataFrame.index[index + 1]
-            schulwochen = dataFrame.at[indexToCheck,0]
+            schulwochen = dataFrame.at[indexToCheck, 0]
         return schulwochen
 
     def reformatDate(self, date: str) -> datetime.date:
@@ -107,7 +107,7 @@ class Parser:
         # Split date into day, month and year
         day, month = date.split('. ')[0], date.split('. ')[1]
 
-        if int(german_months_dict[month]) in range(1,7):
+        if int(german_months_dict[month]) in range(1, 7):
             year = yearFromJanuary
         else:
             year = yearUntilJanuary
@@ -117,16 +117,38 @@ class Parser:
 
         dateObject = self.parseStringToDateObject(reformattedDate)
         return dateObject
-    def parseStringToDateObject(self,dateString: str)->datetime.date:
+
+    def parseStringToDateObject(self, dateString: str) -> datetime.date:
         try:
             return datetime.datetime.strptime(dateString, "%Y.%m.%d").date()
         except ValueError:
             raise ValueError(dateString)
 
+    def reformatTypeColumn(self, dataFrame: pandas.DataFrame) -> pandas.DataFrame:
+        noSchoolTypes = ['Betrieb/Ferien', 'Betrieb', 'Feiertag']
+        dataFrame['Type'] = dataFrame['Type'].apply(
+            lambda x: 'Betrieb' if x in noSchoolTypes else 'Berufsschule')
+        return dataFrame
+
+    def writeToExcel(self, dataFrame: pd.DataFrame) -> None:
+
+        # convert Dates to string format
+        dataFrame['Dates'] = dataFrame['Dates'].apply(lambda x: x.strftime('%d-%m-%Y'))
+
+        # Creating a dictionary from DataFrame
+        data_dict = pd.Series(dataFrame.Type.values, index=dataFrame.Dates).to_dict()
+
+        # convert the dictionary back to dataframe
+        data_frame = pd.DataFrame(list(data_dict.items()), columns=['Dates', 'Type'])
+
+        # Exporting DataFrame to Excel file
+        data_frame.to_excel('school_days.xlsx', index=False)
 # Usage
 file = open('target/FI23.htm', 'r')
 pd.set_option('display.max_rows', 500)
 Parser = Parser(file)
 df = Parser.cleanDataFrame()
 df = Parser.reformatDataFrameDates(df)
+df = Parser.reformatTypeColumn(df)
+df = Parser.writeToExcel(df)
 print(df)
