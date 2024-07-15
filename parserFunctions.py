@@ -22,6 +22,15 @@ def createDataframe(file)->pandas.DataFrame:
 
 
 def cleanDataFrame(dataFrame: pandas.DataFrame) -> pandas.DataFrame:
+    """
+          This functions creates a Cleans the Pandas Dataframe via removing unnecessary
+
+          Parameters:
+         dataFrame(pandas.Dataframe): Is the Dataframe you want to clean
+
+          Returns:
+          pandas.DataFrame: returns a pandas Dataframe with unnecessary Data removed
+          """
     # drop all rows until the Condition is met
     newDataFrame = dataFrame
     dropCondition = 'Stand: 06.12.23'
@@ -41,7 +50,11 @@ def cleanDataFrame(dataFrame: pandas.DataFrame) -> pandas.DataFrame:
         indexesToDrop = range(index,numberOfRows)
         newDataFrame = dataFrame.drop(indexesToDrop)
         print('lel')
-    return newDataFrame
+    indexesToDrop = range(3,11)
+    newDataFrameCleaned = newDataFrame.drop([1],axis=1)
+    newDataFrameCleaned = newDataFrameCleaned.drop(newDataFrameCleaned.columns[2:12], axis = 1)
+
+    return newDataFrameCleaned
 
 
 
