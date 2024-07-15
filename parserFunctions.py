@@ -21,20 +21,28 @@ def createDataframe(file)->pandas.DataFrame:
     return tableDataframe
 
 
-def cleanDataFrame(DataFrame) -> pandas.DataFrame:
-    #drop all rows until the Condition is met
+def cleanDataFrame(dataFrame: pandas.DataFrame) -> pandas.DataFrame:
+    # drop all rows until the Condition is met
+    newDataFrame = dataFrame
     dropCondition = 'Stand: 06.12.23'
     column = 0
-    mask = DataFrame[column] == dropCondition
-    index = int(DataFrame[mask].index[0])
-    topRemovedDataframe =DataFrame.drop(DataFrame.index[:index], inplace=True)
+    mask = dataFrame[column] == dropCondition
+    if mask.any():  # checks if mask has at least one True value
+        index = int(dataFrame[mask].index[0])
+        indexesToDrop = dataFrame.index[:index +1]
+        dataFrame = dataFrame.drop(indexesToDrop).reset_index(drop=True)
 
-    #drop all rows after condition is met
+    # drop all rows after condition is met
     dropCondition = 'NaN'
-    mask = DataFrame[column] == dropCondition
-    index = int(DataFrame[mask].index[0])
-    bottomRemovedDataframe = topRemovedDataframe.drop(topRemovedDataframe.index[index:], inplace=True)
-    return bottomRemovedDataframe
+    mask = dataFrame[column].isna()
+    if mask.any():  # checks if mask has at least one True value
+        index = int(dataFrame[mask].index[0])
+        numberOfRows = dataFrame.shape[0]
+        indexesToDrop = range(index,numberOfRows)
+        newDataFrame = dataFrame.drop(indexesToDrop)
+        print('lel')
+    return newDataFrame
+
 
 
 file = open('target/FI23.htm', 'r')
