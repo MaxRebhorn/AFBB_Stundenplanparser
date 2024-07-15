@@ -1,0 +1,102 @@
+= Parser
+
+This is a Python script which parses the given HTML file into a Pandas DataFrame and cleans, reformats the data before writing it out to an Excel file.
+
+== Imports
+
+This script relies on the following Python packages:
+
+calendar
+datetime
+pandas
+numpy
+os
+json
+== Initialization
+
+Upon initialization, this script creates a DataFrame from the HTML file and sets the dictionary for German month names.
+
+== Methods
+
+The Parser class provides the following methods:
+
+=== createDataframe(file)
+
+This method takes an HTML file as its argument and reads it into a pandas DataFrame.
+
+=== cleanDataFrame(dataFrame='getOrignialDataFrame')
+
+This method cleans the provided pandas DataFrame by removing unnecessary data, replacing it with the original DataFrame if none is provided.
+
+=== reformatDataFrameDates(dataFrame)
+
+This method takes a pandas DataFrame and reformats the dates within it.
+
+=== getSchulwochen()
+
+This method returns the school weeks.
+
+=== reformatDate(date)
+
+This method takes a string as a date and reformats it into a datetime object.
+
+=== parseStringToDateObject(dateString)
+
+This method takes a string in the format "year.month.day" and attempts to parse it into a datetime object, raising a ValueError if unsuccessful.
+
+=== reformatTypeColumn(dataFrame)
+
+This method takes a pandas DataFrame and reformates the values within the 'Type' column based on given criteria.
+
+=== writeToExcel(dataFrame)
+
+This method takes a pandas DataFrame and writes it to an Excel file.
+
+== Usage
+
+To use this script, instantiate the Parser class with the HTML file you wish to parse. From there, you can call the various methods on your instance to clean, reformat, and write your data.
+
+== Code Explanation
+
+=== file = open('target/FI23.htm', 'r')
+
+This line of code opens the file 'FI23.htm' located in the 'target' directory for reading.
+
+=== pd.set_option('display.max_rows', 500)
+
+This changes the maximum display settings for rows in pandas.
+
+=== Parser = Parser(file)
+
+This creates an instance of the Parser class with the file we opened.
+
+=== df = Parser.cleanDataFrame()
+
+This will remove unnecessary data from the pandas DataFrame created from the file.
+
+=== df = Parser.reformatDataFrameDates(df)
+
+This will reformat the dates within the DataFrame to a standard format.
+
+=== df = Parser.reformatTypeColumn(df)
+
+This will reformat the values within the 'Type' column.
+
+=== df = Parser.writeToExcel(df)
+
+This will write the reformatted DataFrame to an Excel file.
+
+=== print(df)
+
+Lastly, this line prints the DataFrame.
+
+== Requirements
+
+This script requires the following Python packages:
+
+Python 3.6 or newer
+pandas 1.1.5 or newer
+numpy 1.19.5 or newer
+You should also have a .htm file to be used as the input for the Parser class.
+
+== This Documentation was Generated via ChatGPT Version 4 it is a place holder and to be updated via propper written Documentation in the Future
