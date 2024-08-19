@@ -144,7 +144,7 @@ class Parser:
         # Exporting DataFrame to Excel file
         data_frame.to_excel('school_days.xlsx', index=False)
 # Usage
-file = open('target/FI23.htm', 'r')
+file = open('target/FI23.html', 'r')
 pd.set_option('display.max_rows', 500)
 Parser = Parser(file)
 df = Parser.cleanDataFrame()
